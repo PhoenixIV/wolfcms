@@ -593,8 +593,8 @@ class Record {
                 }
             }
 
-            $sql = 'INSERT INTO '.self::tableNameFromClassName(get_class($this)).' ('
-                . implode(', ', array_keys($value_of)).') VALUES ('.implode(', ', array_values($value_of)).')';
+            $sql = 'INSERT INTO `'.self::tableNameFromClassName(get_class($this)).'` (`'
+                . implode('`, `', array_keys($value_of)).'`) VALUES ('.implode(', ', array_values($value_of)).')';
             $return = self::$__CONN__->exec($sql) !== false;
             $this->id = self::lastInsertId();
 
@@ -609,7 +609,7 @@ class Record {
             // Escape and format for SQL update query
             foreach ($columns as $column) {
                 if (!empty($this->$column) || is_numeric($this->$column)) { // Do include 0 as value
-                    $value_of[$column] = $column.'='.self::$__CONN__->quote($this->$column);
+                    $value_of[$column] = '`'.$column.'`='.self::$__CONN__->quote($this->$column);
                 }
                 elseif (isset($this->$column)) { // Properly fallback to the default column value instead of relying on an empty string
                     // SQLite can't handle the DEFAULT value
@@ -625,7 +625,7 @@ class Record {
 
             unset($value_of['id']);
 
-            $sql = 'UPDATE '.self::tableNameFromClassName(get_class($this)).' SET '
+            $sql = 'UPDATE `'.self::tableNameFromClassName(get_class($this)).'` SET '
                 . implode(', ', $value_of).' WHERE id = '.$this->id;
             $return = self::$__CONN__->exec($sql) !== false;
 
